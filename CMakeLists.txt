@@ -11,7 +11,8 @@ SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "./bin")
 #include_directories( ${OPENGL_INCLUDE_DIRS} )
 include_directories ("./external/Vulkan-Loader/external/Vulkan-Headers/build/install/include")
 add_subdirectory("./external/Vulkan-Loader")
-
+#GLM------------------------------------------------------
+include_directories ("./external/glm")
 
 #glfw------------------------------------------------------
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "")
