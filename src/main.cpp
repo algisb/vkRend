@@ -1,5 +1,5 @@
 
-//#define GLFW_INCLUDE_VULKAN
+#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
 #include <iostream>
@@ -12,6 +12,7 @@ int main()
     GLFWwindow* window = glfwCreateWindow(800, 600, "Vulkan window", nullptr, nullptr);
 
     uint32_t extensionCount = 0;
+    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
 
     std::cout << extensionCount << " extensions supported" << std::endl;
  

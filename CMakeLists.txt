@@ -9,6 +9,8 @@ SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "./bin")
 #vulkan----------------------------------------------------
 #find_package(Vulkan)
 #include_directories( ${OPENGL_INCLUDE_DIRS} )
+include_directories ("./external/Vulkan-Loader/external/Vulkan-Headers/build/install/include")
+add_subdirectory("./external/Vulkan-Loader")
 
 
 #glfw------------------------------------------------------
@@ -28,4 +30,4 @@ include_directories ("./src")
 file(GLOB MAIN_SRC "./src/*.cpp")
 
 add_executable(vkRend ${MAIN_SRC} )
-target_link_libraries (vkRend glfw)
+target_link_libraries (vkRend glfw vulkan)

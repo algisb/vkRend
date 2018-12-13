@@ -1,1 +1,0 @@
-/home/bob/Downloads/1.1.85.0/samples/API-Samples/run_all_samples.sh

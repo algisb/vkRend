@@ -1,0 +1,12 @@
+prefix=/usr/local
+exec_prefix=/usr/local
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: vkRend
+Description: Vulkan Loader
+Version: 1.1.94
+Libs: -L${libdir} -lvulkan
+Libs.private:  -lstdc++ -lm -lc
+Cflags: -I${includedir}
+
