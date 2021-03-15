@@ -7,6 +7,6 @@ Name: vkRend
 Description: Vulkan Loader
 Version: 1.1.94
 Libs: -L${libdir} -lvulkan
-Libs.private:  -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc
+Libs.private:  -lstdc++ -lm -lc
 Cflags: -I${includedir}
 
