@@ -1,34 +1,46 @@
+#include <stdint.h>
+#include <stdarg.h>
+#include <assert.h>
 
-#define GLFW_INCLUDE_VULKAN
-#include "GLFW/glfw3.h"
-#include "glm/vec4.hpp"
-#include "glm/mat4x4.hpp"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_syswm.h>
 
-#include <iostream>
+#include <vulkan/vulkan.h>
 
-int main()
+
+int main(int argc, char *argv[])
 {
-    glfwInit();
-
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Vulkan window", nullptr, nullptr);
-
-    uint32_t extensionCount = 0;
-    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
-
-    std::cout << extensionCount << " extensions supported" << std::endl;
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
     
-    glm::mat4 matrix;
-    glm::vec4 vec;
-    auto test = matrix * vec;
- 
-    while(!glfwWindowShouldClose(window)) {
-        glfwPollEvents();
+    uint32_t width = 1280;
+    uint32_t height = 720;
+    
+    SDL_Window* window = SDL_CreateWindow(
+        "Vulkan Sample",
+        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+        width, height,
+        0
+    );
+
+    SDL_SysWMinfo info;
+    SDL_VERSION(&info.version);
+    SDL_GetWindowWMInfo(window, &info);
+
+    int run = true;
+    while (run)
+    {
+        SDL_Event evt;
+        while (SDL_PollEvent(&evt))
+        {
+            if (evt.type == SDL_QUIT)
+            {
+                run = 0;
+            }
+        }
+
     }
 
-    glfwDestroyWindow(window);
-
-    glfwTerminate();
+    SDL_Quit();
 
     return 0;
 }
