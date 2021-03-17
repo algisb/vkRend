@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
+#include <cstring>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
@@ -27,6 +28,18 @@
 class VkWrapper
 {
 public:
+    const std::vector<const char*> validationLayers =
+    {
+    "VK_LAYER_KHRONOS_validation"
+        
+    };
+
+#ifdef NDEBUG
+    const bool enableValidationLayers = false;
+#else
+    const bool enableValidationLayers = true;
+#endif
+    
     VkWrapper()
     {}
     ~VkWrapper()
@@ -46,8 +59,44 @@ public:
 private:
     VkInstance instance;
     
+    bool checkValidationLayerSupport()
+    {
+        uint32_t layerCount;
+        vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+
+        std::vector<VkLayerProperties> availableLayers(layerCount);
+        
+        vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+
+        for (const char* layerName : validationLayers)
+        {
+            bool layerFound = false;
+            for (const auto& layerProperties : availableLayers)
+            {
+                dbgPrint("layer name: %s\n", layerProperties.layerName);
+                if (strcmp(layerName, layerProperties.layerName) == 0)
+                {
+                    layerFound = true;
+                    break;
+                }
+            }
+
+            if (!layerFound) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
+    
     void createInstance(SDL_Window* window)
     {
+        if (enableValidationLayers && !checkValidationLayerSupport()) 
+        {
+            dbgPrint("ERROR: validation layers requested, but not available\n");
+        }
+        
         dbgPrint("create instance\n");
         VkApplicationInfo appInfo{};
         appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
