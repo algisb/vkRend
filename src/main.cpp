@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <cstring>
+#include <string>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
@@ -149,6 +150,10 @@ private:
 
 int main(int argc, char *argv[])
 {
+    //this won't work on windows
+    char* vkLayerPathEnv = "VK_LAYER_PATH=../external/Vulkan-ValidationLayers/layers";
+    putenv(vkLayerPathEnv);
+    
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
     
     uint32_t width = 1280;

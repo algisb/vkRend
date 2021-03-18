@@ -44,4 +44,5 @@ CTestTestfile.cmake
 *.kdev4
 .kdev4
 vkRend
+build/
 
