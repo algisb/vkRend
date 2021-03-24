@@ -1,3 +1,6 @@
+#pragma once
+#include <stdarg.h>
+
 #define ENABLE_DBG_PRINT
 
 #ifdef ENABLE_DBG_PRINT

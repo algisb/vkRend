@@ -1,20 +1,10 @@
 #pragma once
 
-#include <stdint.h>
-#include <stdarg.h>
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <vector>
-#include <cstring>
-#include <string>
-
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_syswm.h>
-#include <SDL2/SDL_vulkan.h>
 
 #include <vulkan/vulkan.h>
-#include "DbgPrint.h"
+
+struct SDL_Window;
 
 class VkWrapper
 {
@@ -39,8 +29,30 @@ public:
     
 private:
     VkInstance instance;
+    VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
     
-    bool checkValidationLayerSupport();
     void createInstance(SDL_Window* window);
+    bool checkValidationLayerSupport();
+    void pickPhysicalDevice();
+    bool isDeviceSuitable(VkPhysicalDevice device);
+    
+    struct QueueFamilyIndices
+    {
+        QueueFamilyIndices() = default;
+        ~QueueFamilyIndices()
+        {
+            if(graphicsFamily != nullptr)
+            {
+                delete graphicsFamily;
+            }
+        }
+        
+        bool isComplete()
+        {
+            return graphicsFamily != nullptr;
+        }
+        uint32_t* graphicsFamily = nullptr;
+    };
+    QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
     
 };

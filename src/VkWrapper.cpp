@@ -1,5 +1,16 @@
 #include "VkWrapper.h"
 
+#include <cstring>
+#include <string>
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <stdarg.h>
+
+#include <SDL2/SDL_vulkan.h>
+#include "DbgPrint.h"
+
 VkWrapper::VkWrapper()
 {
     
@@ -14,42 +25,13 @@ void VkWrapper::init(SDL_Window* window)
 {
     dbgPrint("init vulkan\n");
     createInstance(window);
+    pickPhysicalDevice();
 }
 
 void VkWrapper::deinit()
 {
     dbgPrint("deinit vulkan\n");
     vkDestroyInstance(instance, nullptr);
-}
-
-bool VkWrapper::checkValidationLayerSupport()
-{
-    uint32_t layerCount;
-    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
-
-    std::vector<VkLayerProperties> availableLayers(layerCount);
-    
-    vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
-
-    for (const char* layerName : validationLayers)
-    {
-        bool layerFound = false;
-        for (const auto& layerProperties : availableLayers)
-        {
-            //dbgPrint("layer name: %s\n", layerProperties.layerName);
-            if (strcmp(layerName, layerProperties.layerName) == 0)
-            {
-                layerFound = true;
-                break;
-            }
-        }
-
-        if (!layerFound) {
-            return false;
-        }
-    }
-
-    return true;
 }
     
     
@@ -117,4 +99,117 @@ void VkWrapper::createInstance(SDL_Window* window)
     {
         dbgPrint("\t %s\n", entry.extensionName);
     }
+}
+
+bool VkWrapper::checkValidationLayerSupport()
+{
+    uint32_t layerCount;
+    vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+
+    std::vector<VkLayerProperties> availableLayers(layerCount);
+    
+    vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+
+    for (const char* layerName : validationLayers)
+    {
+        bool layerFound = false;
+        for (const auto& layerProperties : availableLayers)
+        {
+            //dbgPrint("layer name: %s\n", layerProperties.layerName);
+            if (strcmp(layerName, layerProperties.layerName) == 0)
+            {
+                layerFound = true;
+                break;
+            }
+        }
+
+        if (!layerFound) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void VkWrapper::pickPhysicalDevice()
+{
+    uint32_t deviceCount = 0;
+    vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+    
+    if (deviceCount == 0)
+    {
+        dbgPrint("ERROR: failed to find GPUs with Vulkan support!");
+    }
+    
+    std::vector<VkPhysicalDevice> devices(deviceCount);
+    vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
+    
+    
+    //TODO: atm we just select the first available device
+    for (const auto& device : devices)
+    {
+        if (isDeviceSuitable(device))
+        {
+            physicalDevice = device;
+            break;
+        }
+    }
+
+    if (physicalDevice == VK_NULL_HANDLE)
+    {
+        dbgPrint("ERROR: failed to find a suitable GPU!");
+    }
+
+
+}
+
+bool VkWrapper::isDeviceSuitable(VkPhysicalDevice device)
+{
+    VkPhysicalDeviceProperties deviceProperties;
+    VkPhysicalDeviceFeatures deviceFeatures;
+    vkGetPhysicalDeviceProperties(device, &deviceProperties);
+    vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
+    
+    QueueFamilyIndices indices = findQueueFamilies(device);
+    
+    if(indices.isComplete() && deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU && deviceFeatures.geometryShader)
+    {
+        dbgPrint("Selected GPU device: %s \n", deviceProperties.deviceName);
+        return true;
+    }
+    {
+        return false;
+    }
+    //return true;
+    
+}
+
+VkWrapper::QueueFamilyIndices VkWrapper::findQueueFamilies(VkPhysicalDevice device)
+{
+    QueueFamilyIndices indices;
+    
+    uint32_t queueFamilyCount = 0;
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+
+    std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+    vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
+    
+    int i = 0;
+    for (const auto& queueFamily : queueFamilies)
+    {
+        if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
+        {
+            if (indices.graphicsFamily == nullptr)
+            {
+                indices.graphicsFamily = new uint32_t;
+            }
+            *indices.graphicsFamily = i;
+            break;
+        }
+
+        i++;
+    }
+    
+    // Logic to find queue family indices to populate struct with
+    return indices;
 }
