@@ -177,6 +177,7 @@ bool VkWrapper::isDeviceSuitable(VkPhysicalDevice device)
         dbgPrint("Selected GPU device: %s \n", deviceProperties.deviceName);
         return true;
     }
+    else
     {
         return false;
     }
