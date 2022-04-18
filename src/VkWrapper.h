@@ -30,11 +30,16 @@ public:
 private:
     VkInstance instance;
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+    VkDevice device; //logical device
+    VkQueue graphicsQueue;
+    VkSurfaceKHR surface;
     
     void createInstance(SDL_Window* window);
     bool checkValidationLayerSupport();
     void pickPhysicalDevice();
     bool isDeviceSuitable(VkPhysicalDevice device);
+    void createLogicalDevice();
+    void createSurface();
     
     struct QueueFamilyIndices
     {
