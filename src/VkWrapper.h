@@ -33,13 +33,16 @@ private:
     VkDevice device; //logical device
     VkQueue graphicsQueue;
     VkSurfaceKHR surface;
+    VkQueue presentQueue;
+
+    const std::vector<const char*> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
     
     void createInstance(SDL_Window* window);
     bool checkValidationLayerSupport();
     void pickPhysicalDevice();
     bool isDeviceSuitable(VkPhysicalDevice device);
+    bool checkDeviceExtensionSupport(VkPhysicalDevice device);
     void createLogicalDevice();
-    void createSurface();
     
     struct QueueFamilyIndices
     {
@@ -50,14 +53,29 @@ private:
             {
                 delete graphicsFamily;
             }
+            if(presentFamily != nullptr)
+            {
+                delete presentFamily;
+            }
         }
         
         bool isComplete()
         {
-            return graphicsFamily != nullptr;
+            return (graphicsFamily != nullptr && presentFamily != nullptr);
         }
         uint32_t* graphicsFamily = nullptr;
+        uint32_t* presentFamily = nullptr;
     };
     QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
+
+    void createSurface(SDL_Window* window);
+
+    struct SwapChainSupportDetails
+    {
+        VkSurfaceCapabilitiesKHR capabilities;
+        std::vector<VkSurfaceFormatKHR> formats;
+        std::vector<VkPresentModeKHR> presentModes;
+    };
+    SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
     
 };

@@ -7,7 +7,7 @@
 int main(int argc, char *argv[])
 {
     //this won't work on windows
-    char* vkLayerPathEnv = "VK_LAYER_PATH=../external/Vulkan-ValidationLayers/layers";
+    char vkLayerPathEnv[] = "VK_LAYER_PATH=../external/Vulkan-ValidationLayers/layers";
     putenv(vkLayerPathEnv);
     
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
