@@ -34,6 +34,7 @@ private:
     VkQueue graphicsQueue;
     VkSurfaceKHR surface;
     VkQueue presentQueue;
+    VkSwapchainKHR swapChain;
 
     const std::vector<const char*> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
     
@@ -43,6 +44,7 @@ private:
     bool isDeviceSuitable(VkPhysicalDevice device);
     bool checkDeviceExtensionSupport(VkPhysicalDevice device);
     void createLogicalDevice();
+    void createSwapChain(SDL_Window* window);
     
     struct QueueFamilyIndices
     {
@@ -70,6 +72,7 @@ private:
 
     void createSurface(SDL_Window* window);
 
+    //joys of swapchain
     struct SwapChainSupportDetails
     {
         VkSurfaceCapabilitiesKHR capabilities;
@@ -77,5 +80,9 @@ private:
         std::vector<VkPresentModeKHR> presentModes;
     };
     SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
+
+    VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+    VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+    VkExtent2D chooseSwapExtent(SDL_Window* window, const VkSurfaceCapabilitiesKHR& capabilities);
     
 };

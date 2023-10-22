@@ -36,6 +36,22 @@ int main(int argc, char *argv[])
         SDL_Event evt;
         while (SDL_PollEvent(&evt))
         {
+            switch(evt.type)
+            {
+                case SDL_KEYDOWN:
+                {
+                    switch(evt.key.keysym.sym)
+                    {
+                        case SDLK_ESCAPE:
+                        {
+                            run = 0;
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+
             if (evt.type == SDL_QUIT)
             {
                 run = 0;
