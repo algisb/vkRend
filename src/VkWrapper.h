@@ -34,7 +34,12 @@ private:
     VkQueue graphicsQueue;
     VkSurfaceKHR surface;
     VkQueue presentQueue;
+
+    VkSurfaceFormatKHR swapchainImageFormat;
+    VkExtent2D swapchainExtent;
     VkSwapchainKHR swapChain;
+    std::vector<VkImage> swapChainImages;
+    std::vector<VkImageView> swapChainImageViews;
 
     const std::vector<const char*> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
     
@@ -45,7 +50,8 @@ private:
     bool checkDeviceExtensionSupport(VkPhysicalDevice device);
     void createLogicalDevice();
     void createSwapChain(SDL_Window* window);
-    
+    void cleanUp();
+
     struct QueueFamilyIndices
     {
         QueueFamilyIndices() = default;
@@ -84,5 +90,7 @@ private:
     VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
     VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
     VkExtent2D chooseSwapExtent(SDL_Window* window, const VkSurfaceCapabilitiesKHR& capabilities);
+
+    void createImageViews();
     
 };
